@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
@@ -22,7 +22,8 @@ const routes = [
 
 const router = createRouter({
   routes,
-  history: createWebHistory(process.env.VUE_APP_BASE_URL),
+
+  history: createWebHashHistory(), // 使用hash模式
   scrollBehavior() {
     return {
       top: 0
