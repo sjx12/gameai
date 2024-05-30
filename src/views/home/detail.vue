@@ -15,7 +15,7 @@
       echoes across the camp us, followed by a burst of noise as students pour out of-da thebuildings in groups,
       chatting and laughing on their way t thschool gates.
     </div>
-    <a href="#" @click="goGame" class="pixel-button">Story start</a>
+    <div @click="goGame" class="pixel-button">Story start</div>
   </div>
 </template>
 <script setup>
