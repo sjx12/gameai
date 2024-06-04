@@ -9,12 +9,12 @@ const routes = [
     }
   },
   {
-    path: '/detail',
+    path: '/detail/:templateId',
     name: 'detail',
     component: () => import(/* webpackChunkName: "about" */ '../views/home/detail.vue')
   },
   {
-    path: '/game',
+    path: '/game/:templateId',
     name: 'game',
     component: () => import(/* webpackChunkName: "about" */ '../views/home/game.vue')
   }

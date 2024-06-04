@@ -14,7 +14,15 @@
     <div class="discover-list">
       <van-list v-model="loading" :finished="finished" finished-text="end" @load="onLoad" refresher-enabled="false">
         <div class="vantList">
-          <div class="discover-item" @click="goDetail" v-for="item in list" :key="item">A White Hair Girl</div>
+          <div
+            class="discover-item"
+            :style="{ backgroundImage: `url(${item.coverImage1 || item.coverImage2})` }"
+            @click="goDetail(item.templateId)"
+            v-for="item in list"
+            :key="item"
+          >
+            {{ item.name }}
+          </div>
         </div>
       </van-list>
     </div>
@@ -22,36 +30,50 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { gameTemplate } from '@/api/index.js'
+
 const router = useRouter()
 const loading = ref(false)
 const finished = ref(false)
 const list = ref([])
+const total = ref(0)
+const size = ref(1)
+const page = ref(20)
 
 function onLoad() {
-  setTimeout(() => {
-    for (let i = 0; i < 50; i++) {
-      list.value.push(list.value.length + 1)
-    }
-    // 加载状态结束
-    loading.value = false
+  console.log('onLoad')
 
+  gameTemplate(size.value, page.value).then(res => {
+    console.log(res)
+    list.value = res.data.content
+    total.value = res.data.total
+    loading.value = false
+    size.value++
     // 数据全部加载完成
-    if (list.value.length >= 200) {
+    if (list.value.length >= total.value) {
       finished.value = true
     }
-  }, 500)
+  })
+
+  // 加载状态结束
 }
-function goDetail() {
+function goDetail(id) {
+  console.log(id)
   router.push({
-    name: 'detail'
+    name: 'detail',
+    params: {
+      templateId: id
+    }
   })
 }
+function gameTemplateApi() {}
 </script>
 
 <style lang="scss" scoped>
 @import url('~@/assets/fonts/index.css');
+
 .home-page {
   height: 100vh;
 
@@ -61,6 +83,7 @@ function goDetail() {
   padding-bottom: 0;
   max-height: 100vh;
 }
+
 .tabs {
   display: flex;
   padding-top: 18px;
@@ -84,12 +107,14 @@ function goDetail() {
       width: 16px;
       height: 16px;
     }
+
     .active-bottom {
       position: absolute;
       display: flex;
       bottom: -10px;
       left: 50%;
       transform: translateX(-10px);
+
       .one {
         position: absolute;
         width: 5px;
@@ -98,6 +123,7 @@ function goDetail() {
         left: 0;
         top: 0px;
       }
+
       .two {
         position: absolute;
         width: 10px;
@@ -106,6 +132,7 @@ function goDetail() {
         left: 5px;
         top: 5px;
       }
+
       .three {
         position: absolute;
         width: 5px;
@@ -117,24 +144,33 @@ function goDetail() {
     }
   }
 }
+
 .discover-list {
   padding-top: 20px;
   margin-top: 30px;
   overflow: auto;
   height: calc(100vh - 200px);
   padding-bottom: 20px;
+
   .vantList {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
 
     width: 100%;
+
+    &::after {
+      content: '';
+      width: 46%;
+    }
+
     .discover-item {
       width: 46%;
       height: 500px;
       margin-bottom: 40px;
       position: relative;
-      background: url(~@/assets/images/test.webp) no-repeat 100% 100%;
+      background-repeat: no-repeat;
+      background-position: center;
       background-size: cover;
       border-radius: 20px;
       display: flex;
@@ -157,16 +193,19 @@ function goDetail() {
 ::-webkit-scrollbar {
   width: 0;
   height: 0;
-  background: transparent; /* 如果需要的话 */
+  background: transparent;
+  /* 如果需要的话 */
 }
 
 /* 针对Firefox */
 * {
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 /* 针对IE和Edge */
 body {
-  -ms-overflow-style: none; /* IE and Edge */
+  -ms-overflow-style: none;
+  /* IE and Edge */
 }
 </style>

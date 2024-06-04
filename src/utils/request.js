@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { getToken } from './tokenStore'
 const service = axios.create({
-  baseURL: '/',
+  baseURL: 'http://hiyou.space/api',
   withCredentials: false,
   timeout: 5000
 })

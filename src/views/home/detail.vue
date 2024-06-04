@@ -1,30 +1,27 @@
 <template>
-  <div class="detail-pane">
+  <div class="detail-pane" :style="{ backgroundImage: `url(${data.coverImage1 || data.coverImage2})` }">
     <div class="return" @click="goHome"><img src="@/assets/images/return.png" alt="" /></div>
-    <div class="detail-header">Swords Woman Riding West on White Horse</div>
+    <div class="detail-header">{{ data.name }}</div>
     <div class="detail-content">
-      The loud ringing of the school bell echoes across the camp us, followed by a burst of noise as students pour out
-      of-da thebuildings in groups, chatting and laughing on their way t thschool gates. The loud ringing of the school
-      bell echoes across the camp us, followed by a burst of noise as students pour out of-da thebuildings in groups,
-      chatting and laughing on their way t thschool gates. The loud ringing of the school bell echoes across the camp
-      us, followed by a burst of noise as students pour out of-da thebuildings in groups, chatting and laughing on their
-      way t thschool gates. The loud ringing of the school bell echoes across the camp us, followed by a burst of noise
-      as students pour out of-da thebuildings in groups, chatting and laughing on their way t thschool gates. The loud
-      ringing of the school bell echoes across the camp us, followed by a burst of noise as students pour out of-da
-      thebuildings in groups, chatting and laughing on their way t thschool gates. The loud ringing of the school bell
-      echoes across the camp us, followed by a burst of noise as students pour out of-da thebuildings in groups,
-      chatting and laughing on their way t thschool gates.
+      {{ data.description }}
     </div>
     <div @click="goGame" class="pixel-button">Story start</div>
   </div>
 </template>
 <script setup>
-import { useRouter } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { gameTemplateDetail, gamePlay } from '@/api/index.js'
 const router = useRouter()
+const route = useRoute()
+const data = ref({})
 
 function goGame() {
-  router.push({
-    name: 'game'
+  gamePlay(route.params.templateId).then(res => {
+    console.log(res)
+    // router.push({
+    //   name: 'game'
+    // })
   })
 }
 
@@ -33,13 +30,25 @@ function goHome() {
     name: 'home'
   })
 }
+
+function getDetail() {
+  gameTemplateDetail(route.params.templateId).then(res => {
+    console.log(res)
+    data.value = res.data
+  })
+}
+onMounted(() => {
+  getDetail()
+})
 </script>
 <style lang="scss" scoped>
 @import url('~@/assets/fonts/index.css');
 .detail-pane {
   width: 100%;
   height: 100vh;
-  background: url(~@/assets/images/test.webp) no-repeat 100% 100%;
+
+  background-repeat: no-repeat;
+  background-position: center;
   background-size: cover;
   padding: 40px;
   display: flex;
