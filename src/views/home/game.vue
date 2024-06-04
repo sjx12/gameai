@@ -1,35 +1,67 @@
 <template>
-  <div class="detail-pane">
+  <van-loading class="vanloading" v-if="loading" size="24px">加载中...</van-loading>
+  <div class="detail-pane" :style="{ backgroundImage: `url(${gameData.screen})` }">
     <div class="return" @click="goHome"><img src="@/assets/images/return.png" alt="" /></div>
     <div class="content">
       <div class="question">
-        The sky is a deep blue, resembling a massive slab of blue jade, with the midsummer sun hanging high like a fiery
-        orb, suggesting it's around three in the afternoon. The sky is a deep blue, resembling a massive slab of blue
-        jade, with the midsummer sun hanging high like a fiery orb, suggesting it's around three in the afternoon.
+        {{ gameData.text }}
       </div>
-      <div style="margin-bottom: 20px">
+      <div style="margin-bottom: 20px; text-align: center">
         <span class="tips">Click on one of the following options or enter text</span>
       </div>
-
-      <div class="option">Looking around you notice some faintlight shini dgg through the cracks</div>
-      <div class="option">Looking around you notice some faintlight shini dgg through the cracks</div>
+      <div class="option" v-for="item in gameData.options" @click="submit(item)" :key="item">{{ item }}</div>
     </div>
 
     <div class="quiz">
-      <input type="text" placeholder="Type your message" class="quiz-input" />
-      <img class="submit-btn" src="@/assets/images/submit-btn.png" alt="" />
+      <input type="text" v-model="searchValue" placeholder="Type your message" class="quiz-input" />
+      <img class="submit-btn" src="@/assets/images/submit-btn.png" alt="" @click="submit(searchValue)" />
     </div>
   </div>
 </template>
 <script setup>
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { playNext } from '@/api/index.js'
+import { getQuestion, setQuestion } from './index.js'
 const router = useRouter()
+const route = useRoute()
+const searchValue = ref('')
+const loading = ref(false)
+
+const gameData = ref({})
 
 function goHome() {
   router.push({
     name: 'home'
   })
 }
+
+function submit(val) {
+  loading.value = true
+  playNext({
+    templateId: route.params.templateId,
+    messages: [gameData.value.message],
+    option: val
+  }).then(res => {
+    loading.value = false
+    searchValue.value = ''
+    console.log(res)
+    gameData.value = res.data
+    setQuestion(route.params.templateId, gameData.value)
+  })
+}
+
+onMounted(() => {
+  const data = getQuestion(route.params.templateId)
+  if (!data.text) {
+    router.push({
+      name: 'home'
+    })
+  } else {
+    gameData.value = data
+    console.log('gameData.value', gameData.value)
+  }
+})
 </script>
 <style lang="scss" scoped>
 .detail-pane {
@@ -41,7 +73,7 @@ function goHome() {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding-bottom: 100px;
+  padding-bottom: 50px;
   padding-top: 200px;
 }
 
@@ -138,5 +170,16 @@ function goHome() {
   max-height: 50%;
   overflow: auto;
   margin-bottom: 20px;
+}
+.vanloading {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.3);
 }
 </style>

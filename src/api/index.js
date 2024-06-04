@@ -32,5 +32,11 @@ export function gamePlay(templateId) {
   })
 }
 
-//继续游戏
-export function gameContinue() {}
+// 下一幕
+export function playNext(data) {
+  return request({
+    url: `game/play/next`,
+    method: 'post',
+    data: data
+  })
+}

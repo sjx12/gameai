@@ -1,4 +1,5 @@
 <template>
+  <van-loading class="vanloading" v-if="loading" size="24px">加载中...</van-loading>
   <div class="detail-pane" :style="{ backgroundImage: `url(${data.coverImage1 || data.coverImage2})` }">
     <div class="return" @click="goHome"><img src="@/assets/images/return.png" alt="" /></div>
     <div class="detail-header">{{ data.name }}</div>
@@ -11,17 +12,26 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { setQuestion, getQuestion } from './index.js'
 import { gameTemplateDetail, gamePlay } from '@/api/index.js'
 const router = useRouter()
 const route = useRoute()
 const data = ref({})
+const loading = ref(false)
 
 function goGame() {
+  loading.value = true
   gamePlay(route.params.templateId).then(res => {
     console.log(res)
-    // router.push({
-    //   name: 'game'
-    // })
+    loading.value = false
+    setQuestion(route.params.templateId, res.data)
+
+    router.push({
+      name: 'game',
+      params: {
+        templateId: route.params.templateId
+      }
+    })
   })
 }
 
@@ -38,7 +48,17 @@ function getDetail() {
   })
 }
 onMounted(() => {
-  getDetail()
+  const data = getQuestion(route.params.templateId)
+  if (!data.text) {
+    getDetail()
+  } else {
+    router.push({
+      name: 'game',
+      params: {
+        templateId: route.params.templateId
+      }
+    })
+  }
 })
 </script>
 <style lang="scss" scoped>
@@ -150,5 +170,16 @@ onMounted(() => {
     width: 30px;
     opacity: 1;
   }
+}
+.vanloading {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.3);
 }
 </style>
