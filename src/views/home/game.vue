@@ -37,18 +37,25 @@ function goHome() {
 }
 
 function submit(val) {
+  if (loading.value) {
+    return false
+  }
   loading.value = true
   playNext({
     templateId: route.params.templateId,
     messages: [gameData.value.message],
     option: val
-  }).then(res => {
-    loading.value = false
-    searchValue.value = ''
-    console.log(res)
-    gameData.value = res.data
-    setQuestion(route.params.templateId, gameData.value)
   })
+    .then(res => {
+      loading.value = false
+      searchValue.value = ''
+      console.log(res)
+      gameData.value = res.data
+      setQuestion(route.params.templateId, gameData.value)
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 onMounted(() => {

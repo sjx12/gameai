@@ -20,19 +20,26 @@ const data = ref({})
 const loading = ref(false)
 
 function goGame() {
+  if (loading.value) {
+    return false
+  }
   loading.value = true
-  gamePlay(route.params.templateId).then(res => {
-    console.log(res)
-    loading.value = false
-    setQuestion(route.params.templateId, res.data)
+  gamePlay(route.params.templateId)
+    .then(res => {
+      console.log(res)
+      loading.value = false
+      setQuestion(route.params.templateId, res.data)
 
-    router.push({
-      name: 'game',
-      params: {
-        templateId: route.params.templateId
-      }
+      router.push({
+        name: 'game',
+        params: {
+          templateId: route.params.templateId
+        }
+      })
     })
-  })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 function goHome() {

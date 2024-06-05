@@ -3,7 +3,7 @@ import { getToken } from './tokenStore'
 const service = axios.create({
   baseURL: 'http://hiyou.space/api',
   withCredentials: false,
-  timeout: 15000
+  timeout: 35000
 })
 
 // request拦截器 request interceptor
