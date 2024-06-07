@@ -1,5 +1,5 @@
 <template>
-  <van-loading class="vanloading" v-if="loading" size="24px">加载中...</van-loading>
+  <van-loading class="vanloading" v-if="loading" size="24px">loading...</van-loading>
   <div class="detail-pane" :style="{ backgroundImage: `url(${data.coverImage1 || data.coverImage2})` }">
     <div class="return" @click="goHome"><img src="@/assets/images/return.png" alt="" /></div>
     <div class="detail-header">{{ data.name }}</div>

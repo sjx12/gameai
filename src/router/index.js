@@ -5,7 +5,7 @@ const routes = [
     name: 'home',
     component: () => import(/* webpackChunkName: "home" */ '../views/home/index.vue'),
     meta: {
-      title: '首页'
+      title: 'game'
     }
   },
   {

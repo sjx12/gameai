@@ -1,5 +1,5 @@
 <template>
-  <van-loading class="vanloading" v-if="loading" size="24px">加载中...</van-loading>
+  <van-loading class="vanloading" v-if="loading" size="24px">loading...</van-loading>
   <div class="detail-pane" :style="{ backgroundImage: `url(${gameData.screen})` }">
     <div class="return" @click="goHome"><img src="@/assets/images/return.png" alt="" /></div>
     <div class="content">
@@ -130,7 +130,8 @@ onMounted(() => {
   }
 }
 .question {
-  background: rgba(28, 29, 32, 0.9);
+  background: rgba(28, 29, 32);
+  opacity: 0.6;
   border: 2px solid #474e63;
   padding: 28px 40px;
   font-family: PingFang SC, PingFang SC;
@@ -145,6 +146,7 @@ onMounted(() => {
 }
 .tips {
   background: rgba(28, 29, 32, 0.9);
+  opacity: 0.6;
   border: 2px solid #474e63;
   padding: 18px 20px;
   font-family: PingFang SC, PingFang SC;
@@ -161,12 +163,13 @@ onMounted(() => {
 }
 .option {
   padding: 20px 40px;
-  background: #d8d8d8;
+  background: rgba(96, 96, 96, 0.6);
+
   border-radius: 10px;
   font-family: PingFang SC, PingFang SC;
   font-weight: 400;
   font-size: 24px;
-  color: #f5fbff;
+  color: #fff;
   line-height: 36px;
   text-align: left;
   font-style: normal;
